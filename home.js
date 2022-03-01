@@ -170,8 +170,8 @@ function incrementQty(e){
 
 function decrementQty(e){
   let qty = e.target.nextElementSibling;
-  if(qty.classList.value ==="shop-item-quantity admin" && qty.innerText>-1){
-          qty.innerText--;
+  if(qty.classList.value ==="shop-item-quantity admin" && qty.innerText>0){
+      qty.innerText--;
   }
   let item = qty.closest('.shop-item');
   updateQtyInStorage(item.children[0].innerText,qty.innerText);
