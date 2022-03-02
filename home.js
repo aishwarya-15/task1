@@ -231,6 +231,7 @@ function purchase(e) {
     // console.log(price);
     price = price.slice(3);
     let qty = e.target.previousElementSibling.children[1].innerText;
+    e.target.previousElementSibling.children[1].innerText="0";
     // console.log(qty)
     updateQtyInStorage(title, qty);
     let total = price * qty;
