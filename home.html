@@ -1,16 +1,11 @@
 <!DOCTYPE html>
 <html>
 <title>Dashboard</title>
-
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="home.css">
-
 </head>
-
 <body>
-
     <div class="topnav">
         <a class="active admin">Admin Dashboard</a>
         <a class="active user">User Dashboard</a>
@@ -21,12 +16,7 @@
         <button class="tablink" onclick="openPage('Inventory')">Inventory</button>
         <button class="tablink" onclick="openPage('Orders')">Orders</button>
     </div>
-
-    <!-- <div class="components">
-        <label for="books" id="books">Books</label>
-        <input type="text" id="search" placeholder="search">
-        <button id="add-book" class="admin">  Add Book</button>
-    </div> -->
+    
     <div id="Inventory" class="tabcontent inventory">
         <div class="components inventory">
             <label for="books" id="books">Books</label>
@@ -37,33 +27,11 @@
             <div class="shop-items"></div>
         </section>
     </div>
-
-    <!-- <div>
-        <section class="container content-section user">
-            <h3>Cart</h3>
-            <table class="cart-table">
-                <tr class="row">
-                    <th>Book Name</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                </tr>
-                <tr class="row">
-                </tr>
-            </table>
-            <section class="purchase">
-                 <h3>Total:</h3>
-                 <h3 id="amount"></h3>
-            </section>
-            <button id="purchase-button">Purchase</button>
-        </section>
-
-    </div> -->
      
     <div id="Orders" class="tabcontent orders">
         <div class="components orders">
             <label for="books" id="books">Search</label>
             <input type="text" id="search-orders" class="search" placeholder="search">
-            <!-- <button id="add-book" class="admin">  Add Book</button> -->
         </div>
         <section class="container content-section">
             <h3>Orders</h3>
@@ -95,9 +63,7 @@
             </div>
         </div>
     </div>
-
-
+    
     <script src="home.js"></script>
 </body>
-
 </html>
