@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', displayBooksInOrdersUI);
 
 function loadUI() {
   let loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+  // let loggedUser = getItem('loggedUser');
   if (loggedUser.role) {
     let userElements = document.querySelectorAll('.user');
     userElements.forEach(item => item.remove());
@@ -98,19 +99,18 @@ function closeModal(e) {
       values.push(input.value);
       input.value = "";
     }
-    let book = new Book(values[0], values[1], values[2], values[3], values[4], values[5]);
-    let bookStorage;
-    // if(localStorage.getItem('bookStorage')===null){
-    //   bookStorage = [book];
-    // }else{
-    bookStorage = JSON.parse(localStorage.getItem('bookStorage'));
-    bookStorage.push(book);
-    // }
-    localStorage.setItem('bookStorage', JSON.stringify(bookStorage));
-    document.querySelector('.modal-bg').classList.add('hidden');
-    //  alert("Book Added Successfully")
-    loadBooksUI();
-    loadUI();
+    if(values[0] ==="" || values[1] ==="" || values[2]==="" || values[3]===""){
+        alert("Fill in all the fields");
+    }else{
+        let book = new Book(values[0], values[1], values[2], values[3], values[4], values[5]);
+        let bookStorage = JSON.parse(localStorage.getItem('bookStorage'));
+        bookStorage.push(book);
+        localStorage.setItem('bookStorage', JSON.stringify(bookStorage));
+        document.querySelector('.modal-bg').classList.add('hidden');
+        alert("Book Added Successfully")
+        loadBooksUI();
+        loadUI();
+    }
   }
 }
 
@@ -123,39 +123,39 @@ function openPage(pageName) {
   document.getElementById(pageName).style.display = "block";
 }
 
-function clearSearchBar(e){
-  e.target.value=""
+function clearSearchBar(e) {
+  e.target.value = ""
 }
 
 function searchFilter(e) {
   let term = e.target.value.toLowerCase();
-    if(e.target.closest('.inventory')){
-        let titles = document.querySelectorAll('.shop-item-title');
-        let shopItems = document.querySelectorAll('.shop-item');
-        titles.forEach(
-          (title) => {
-            if (title.innerText.toLowerCase().indexOf(term) != -1) {
-              title.closest('.shop-item').style.display = "block";
-            }
-            else {
-              title.closest('.shop-item').style.display = "none";
-            }
-          }
-        );  
-    }
-    if(e.target.closest('.orders')){
-      let table = document.getElementById('table');
-      let tableRows =table.getElementsByTagName('tr');
-      for(let i=1;i<tableRows.length;i++){
-          let title = tableRows[i].getElementsByTagName('td')[2].innerText;
-          if(title.toLowerCase().indexOf(term) != -1){
-            tableRows[i].style.display="";
-          }
-          else {
-            tableRows[i].style.display="none";
-          }
+  if (e.target.closest('.inventory')) {
+    let titles = document.querySelectorAll('.shop-item-title');
+    let shopItems = document.querySelectorAll('.shop-item');
+    titles.forEach(
+      (title) => {
+        if (title.innerText.toLowerCase().indexOf(term) != -1) {
+          title.closest('.shop-item').style.display = "block";
+        }
+        else {
+          title.closest('.shop-item').style.display = "none";
+        }
+      }
+    );
+  }
+  if (e.target.closest('.orders')) {
+    let table = document.getElementById('table');
+    let tableRows = table.getElementsByTagName('tr');
+    for (let i = 1; i < tableRows.length; i++) {
+      let title = tableRows[i].getElementsByTagName('td')[2].innerText;
+      if (title.toLowerCase().indexOf(term) != -1) {
+        tableRows[i].style.display = "";
+      }
+      else {
+        tableRows[i].style.display = "none";
       }
     }
+  }
 }
 
 function deleteBookUI(el) {
@@ -174,28 +174,42 @@ function removeBook(title) {
   books.forEach((book, index) => {
     if (book.title === title) {
       books.splice(index, 1);
-    } else {
-      console.log(book.title)
-    }
+    } 
   });
   localStorage.setItem('bookStorage', JSON.stringify(books));
 }
 
+function updateQtyInStorageUser(title,qty,total){
+    let books = JSON.parse(localStorage.getItem('bookStorage'));
+    books.forEach((book) => {
+        if (book.title === title) {
+            // console.log(Number(book.quantity) > Number(qty))
+          if(Number(book.quantity) >= Number(qty)){
+            book.quantity -= qty;
+            let loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+            let username = loggedUser.username;
+            let email = loggedUser.email;
+            let date = Date.now();
+            let orderId = localStorage.getItem('orderId');
+            // console.log(orderId)
+            localStorage.setItem('orderId', ++orderId);
+            orderStorage(orderId, username, email, title, qty, date, total);
+            displayBooksInOrdersUI();
+          } 
+          else{
+            alert("Required stock is not available");
+          }          
+        }
+      });
+    localStorage.setItem('bookStorage', JSON.stringify(books));
+}
 function updateQtyInStorage(title, qty) {
   let books = JSON.parse(localStorage.getItem('bookStorage'));
-  if (JSON.parse(localStorage.getItem('loggedUser')).role) {
     books.forEach((book) => {
       if (book.title === title) {
         book.quantity = qty;
       }
     });
-  } else {
-    books.forEach((book) => {
-      if (book.title === title) {
-        book.quantity -= qty;
-      }
-    });
-  }
   localStorage.setItem('bookStorage', JSON.stringify(books));
 }
 
@@ -239,6 +253,7 @@ function orderStorage(orderId, username, email, title, quantity, date, total) {
   let storage = JSON.parse(localStorage.getItem('orderStorage'));
   storage.push(newOrder);
   localStorage.setItem('orderStorage', JSON.stringify(storage));
+//   console.log(storage);
 }
 
 function purchase(e) {
@@ -249,20 +264,15 @@ function purchase(e) {
     // console.log(price);
     price = price.slice(3);
     let qty = e.target.previousElementSibling.children[1].innerText;
-    e.target.previousElementSibling.children[1].innerText="0";
+    e.target.previousElementSibling.children[1].innerText = "0";
     // console.log(qty)
-    updateQtyInStorage(title, qty);
     let total = price * qty;
-    let loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
-    let username = loggedUser.username;
-    let email = loggedUser.email;
-    let date = Date.now();
-    let orderId = localStorage.getItem('orderId');
-    // console.log(orderId)
-    localStorage.setItem('orderId', ++orderId);
-
-    orderStorage(orderId, username, email, title, qty, date, total);
-    displayBooksInOrdersUI();
+    if(qty ==="0"){
+        alert("add minimum 1 item");
+    }
+    else{
+        updateQtyInStorageUser(title, qty ,total); 
+    }
   }
   else return;
 }
@@ -292,7 +302,7 @@ function displayBooksInOrdersUI() {
       <td>${order.email}</td>
       <td>${order.title}</td>
       <td>${order.quantity}</td>
-      <td>${Date(order.date).slice(4,24)}</td>
+      <td>${Date(order.date).slice(4, 24)}</td>
       <td>${order.total}</td>`
       // console.log(row);
       table.appendChild(row);
@@ -307,9 +317,8 @@ function displayBooksInOrdersUI() {
         <td>${order.email}</td>
         <td>${order.title}</td>
         <td>${order.quantity}</td>
-        <td>${Date(order.date).slice(4,24)}</td>
+        <td>${Date(order.date).slice(4, 24)}</td>
         <td>${order.total}</td>`
-        // console.log(row);
         table.appendChild(row);
       }
     }
@@ -319,17 +328,15 @@ let logout = document.getElementById('logout');
 let addbook = document.getElementById('add-book');
 let modal = document.querySelector('.addbook-modal');
 let searchBooks = document.getElementById('search-books');
-let searchOrders = document.getElementById('search-orders');
-// let deleteBtn= document.querySelector('.btn-delete'); 
+let searchOrders = document.getElementById('search-orders'); 
 let items = document.querySelector('.shop-items');
-// document.getElementById("defaultOpen").click();
 logout.addEventListener('click', Logout);
 addbook.addEventListener('click', openModal);
 modal.addEventListener('click', closeModal);
 searchBooks.addEventListener('keyup', searchFilter);
-searchBooks.addEventListener('blur',clearSearchBar);
+searchBooks.addEventListener('blur', clearSearchBar);
 searchOrders.addEventListener('keyup', searchFilter);
-searchOrders.addEventListener('blur',clearSearchBar);
+searchOrders.addEventListener('blur', clearSearchBar);
 
 
 items.addEventListener('click', deleteBookUI);
