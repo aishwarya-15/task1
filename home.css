@@ -10,6 +10,7 @@ body {
 .topnav {
     overflow: hidden;
     background-color: #333;
+
 }
 
 .subnav {
@@ -58,7 +59,7 @@ body {
     height: 100%;
 }
 
-#search {
+.search {
     padding: 10px;
     margin: 5px;
     border: 2px solid #777;
@@ -236,6 +237,7 @@ body {
 }
 
 
+#purchase-button,
 .btn-buy{
     margin-right: 10px;
     background-color:#333;

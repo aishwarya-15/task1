@@ -123,21 +123,39 @@ function openPage(pageName) {
   document.getElementById(pageName).style.display = "block";
 }
 
+function clearSearchBar(e){
+  e.target.value=""
+}
 
 function searchFilter(e) {
   let term = e.target.value.toLowerCase();
-  let titles = document.querySelectorAll('.shop-item-title');
-  let shopItems = document.querySelectorAll('.shop-item');
-  titles.forEach(
-    (title) => {
-      if (title.innerText.toLowerCase().indexOf(term) != -1) {
-        title.closest('.shop-item').style.display = "block";
-      }
-      else {
-        title.closest('.shop-item').style.display = "none";
+    if(e.target.closest('.inventory')){
+        let titles = document.querySelectorAll('.shop-item-title');
+        let shopItems = document.querySelectorAll('.shop-item');
+        titles.forEach(
+          (title) => {
+            if (title.innerText.toLowerCase().indexOf(term) != -1) {
+              title.closest('.shop-item').style.display = "block";
+            }
+            else {
+              title.closest('.shop-item').style.display = "none";
+            }
+          }
+        );  
+    }
+    if(e.target.closest('.orders')){
+      let table = document.getElementById('table');
+      let tableRows =table.getElementsByTagName('tr');
+      for(let i=1;i<tableRows.length;i++){
+          let title = tableRows[i].getElementsByTagName('td')[2].innerText;
+          if(title.toLowerCase().indexOf(term) != -1){
+            tableRows[i].style.display="";
+          }
+          else {
+            tableRows[i].style.display="none";
+          }
       }
     }
-  )
 }
 
 function deleteBookUI(el) {
@@ -274,7 +292,7 @@ function displayBooksInOrdersUI() {
       <td>${order.email}</td>
       <td>${order.title}</td>
       <td>${order.quantity}</td>
-      <td>${Date(order.date)}</td>
+      <td>${Date(order.date).slice(4,24)}</td>
       <td>${order.total}</td>`
       // console.log(row);
       table.appendChild(row);
@@ -285,11 +303,11 @@ function displayBooksInOrdersUI() {
       if (order.username === loggedUser.username) {
         let row = document.createElement('tr');
         row.innerHTML = `
-        <td>${order.orderId}</td>
+        <td >${order.orderId}</td>
         <td>${order.email}</td>
         <td>${order.title}</td>
         <td>${order.quantity}</td>
-        <td>${Date(order.date)}</td>
+        <td>${Date(order.date).slice(4,24)}</td>
         <td>${order.total}</td>`
         // console.log(row);
         table.appendChild(row);
@@ -300,14 +318,20 @@ function displayBooksInOrdersUI() {
 let logout = document.getElementById('logout');
 let addbook = document.getElementById('add-book');
 let modal = document.querySelector('.addbook-modal');
-let searchBar = document.getElementById('search');
+let searchBooks = document.getElementById('search-books');
+let searchOrders = document.getElementById('search-orders');
 // let deleteBtn= document.querySelector('.btn-delete'); 
 let items = document.querySelector('.shop-items');
-document.getElementById("defaultOpen").click();
+// document.getElementById("defaultOpen").click();
 logout.addEventListener('click', Logout);
 addbook.addEventListener('click', openModal);
 modal.addEventListener('click', closeModal);
-searchBar.addEventListener('keyup', searchFilter);
+searchBooks.addEventListener('keyup', searchFilter);
+searchBooks.addEventListener('blur',clearSearchBar);
+searchOrders.addEventListener('keyup', searchFilter);
+searchOrders.addEventListener('blur',clearSearchBar);
+
+
 items.addEventListener('click', deleteBookUI);
 items.addEventListener('click', incrementQty);
 items.addEventListener('click', decrementQty);

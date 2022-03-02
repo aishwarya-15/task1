@@ -18,16 +18,21 @@
     </div>
 
     <div class="subnav">
-        <button class="tablink" id="defaultOpen" onclick="openPage('Inventory')">Inventory</button>
+        <button class="tablink" onclick="openPage('Inventory')">Inventory</button>
         <button class="tablink" onclick="openPage('Orders')">Orders</button>
     </div>
 
-    <div class="components">
+    <!-- <div class="components">
         <label for="books" id="books">Books</label>
         <input type="text" id="search" placeholder="search">
         <button id="add-book" class="admin">  Add Book</button>
-    </div>
-    <div id="Inventory" class="tabcontent">
+    </div> -->
+    <div id="Inventory" class="tabcontent inventory">
+        <div class="components inventory">
+            <label for="books" id="books">Books</label>
+            <input type="text" id="search-books" class="search" placeholder="search">
+            <button id="add-book" class="admin">  Add Book</button>
+        </div>
         <section class="container content-section">
             <div class="shop-items"></div>
         </section>
@@ -54,10 +59,15 @@
 
     </div> -->
      
-    <div id="Orders" class="tabcontent">
+    <div id="Orders" class="tabcontent orders">
+        <div class="components orders">
+            <label for="books" id="books">Search</label>
+            <input type="text" id="search-orders" class="search" placeholder="search">
+            <!-- <button id="add-book" class="admin">  Add Book</button> -->
+        </div>
         <section class="container content-section">
             <h3>Orders</h3>
-            <table class="table"></table>
+            <table class="table" id="table"></table>
         </section>
 
     </div>
